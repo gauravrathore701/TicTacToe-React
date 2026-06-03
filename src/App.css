@@ -1,10 +1,246 @@
-.board-row {
+/* ── Layout ── */
+.App {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
-  width: 500px;
+  min-height: 100vh;
 }
 
-.board-container {
-  margin: 20px;
+.game-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+/* ── Title ── */
+.game-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, #00d2ff, #a855f7, #ff6b9d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+/* ── Scoreboard ── */
+.scoreboard {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.score-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  min-width: 100px;
+  transition: all 0.3s ease;
+}
+
+.score-card.active-turn {
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.score-symbol {
+  font-size: 1.8rem;
+  font-weight: 900;
+}
+
+.score-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.score-num {
+  font-size: 2rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.score-divider {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.1em;
+}
+
+/* ── X / O Colors ── */
+.x-symbol {
+  color: #38bdf8;
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+}
+
+.o-symbol {
+  color: #f472b6;
+  text-shadow: 0 0 12px rgba(244, 114, 182, 0.6);
+}
+
+/* ── Status Bar ── */
+.status-bar {
+  font-size: 1.1rem;
+  font-weight: 600;
+  min-height: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.status-winner {
+  font-size: 1.4rem;
+  font-weight: 800;
+  animation: pulse 1s ease-in-out infinite alternate;
+}
+
+.status-draw {
+  color: #fbbf24;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.status-turn {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+@keyframes pulse {
+  from { opacity: 0.7; transform: scale(1); }
+  to   { opacity: 1;   transform: scale(1.05); }
+}
+
+/* ── Board ── */
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 120px);
+  grid-template-rows: repeat(3, 120px);
+  gap: 10px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Squares ── */
+.square {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.square.empty:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: scale(1.04);
+}
+
+.square.filled {
+  cursor: default;
+}
+
+.square.x-val {
+  border-color: rgba(56, 189, 248, 0.35);
+  background: rgba(56, 189, 248, 0.06);
+}
+
+.square.o-val {
+  border-color: rgba(244, 114, 182, 0.35);
+  background: rgba(244, 114, 182, 0.06);
+}
+
+.square.winning {
+  background: rgba(168, 85, 247, 0.2);
+  border-color: rgba(168, 85, 247, 0.7);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+  animation: winning-pop 0.4s ease forwards;
+}
+
+@keyframes winning-pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.12); }
+  100% { transform: scale(1.06); }
+}
+
+.square-text {
+  font-size: 2.8rem;
+  font-weight: 900;
+  line-height: 1;
+  user-select: none;
+  transition: transform 0.15s ease;
+}
+
+.square.x-val .square-text { color: #38bdf8; text-shadow: 0 0 16px rgba(56, 189, 248, 0.7); }
+.square.o-val .square-text { color: #f472b6; text-shadow: 0 0 16px rgba(244, 114, 182, 0.7); }
+
+/* ── Buttons ── */
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-play-again,
+.btn-reset {
+  padding: 0.65rem 1.6rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-play-again {
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+.btn-play-again:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+}
+
+.btn-reset {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-reset:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  transform: translateY(-2px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .board {
+    grid-template-columns: repeat(3, 90px);
+    grid-template-rows: repeat(3, 90px);
+    gap: 8px;
+  }
+
+  .square-text {
+    font-size: 2.2rem;
+  }
+
+  .game-title {
+    font-size: 2rem;
+  }
 }

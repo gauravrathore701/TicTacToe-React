@@ -1,20 +1,12 @@
 import React from "react";
 
-const Square = (props) => {
+const Square = ({ value, onClick, isWinning, disabled }) => {
   return (
     <div
-      onClick={props.onClick}
-      style={{
-        border: "1px solid",
-        height: "100px",
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-      className="square"
+      onClick={disabled && !value ? undefined : onClick}
+      className={`square ${value ? "filled" : "empty"} ${isWinning ? "winning" : ""} ${value === "X" ? "x-val" : value === "O" ? "o-val" : ""}`}
     >
-      <h5>{props.value}</h5>
+      <span className="square-text">{value}</span>
     </div>
   );
 };
