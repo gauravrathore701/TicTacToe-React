@@ -25,33 +25,57 @@ const Board = () => {
   const [state, setState] = useState(Array(9).fill(null));
   const [isXTurn, setIsXTurn] = useState(true);
   const [scores, setScores] = useState({ X: 0, O: 0 });
+  const [moveHistory, setMoveHistory] = useState([]);
+  const [lastRemoved, setLastRemoved] = useState(null);
 
   const result = checkWinner(state);
-  const isDraw = !result && state.every((s) => s !== null);
   const winningSquares = result ? result.line : [];
 
   const handleClick = (index) => {
     if (state[index] || result) return;
+
     const copy = [...state];
     copy[index] = isXTurn ? "X" : "O";
-    setState(copy);
-    setIsXTurn(!isXTurn);
+    const newHistory = [...moveHistory, index];
 
     const newResult = checkWinner(copy);
     if (newResult) {
       setScores((prev) => ({ ...prev, [newResult.winner]: prev[newResult.winner] + 1 }));
+      setState(copy);
+      setMoveHistory(newHistory);
+      setIsXTurn(!isXTurn);
+      setLastRemoved(null);
+      return;
     }
+
+    // Board full with no winner — remove oldest marker
+    if (copy.every((s) => s !== null)) {
+      const oldestIndex = newHistory[0];
+      copy[oldestIndex] = null;
+      setLastRemoved(oldestIndex);
+      setMoveHistory(newHistory.slice(1));
+    } else {
+      setLastRemoved(null);
+      setMoveHistory(newHistory);
+    }
+
+    setState(copy);
+    setIsXTurn(!isXTurn);
   };
 
   const playAgain = () => {
     setState(Array(9).fill(null));
     setIsXTurn(true);
+    setMoveHistory([]);
+    setLastRemoved(null);
   };
 
   const resetAll = () => {
     setState(Array(9).fill(null));
     setIsXTurn(true);
     setScores({ X: 0, O: 0 });
+    setMoveHistory([]);
+    setLastRemoved(null);
   };
 
   return (
@@ -59,13 +83,13 @@ const Board = () => {
       <h1 className="game-title">Tic-Tac-Toe</h1>
 
       <div className="scoreboard">
-        <div className={`score-card score-x ${isXTurn && !result && !isDraw ? "active-turn" : ""}`}>
+        <div className={`score-card score-x ${isXTurn && !result ? "active-turn" : ""}`}>
           <span className="score-symbol x-symbol">X</span>
           <span className="score-label">Player X</span>
           <span className="score-num">{scores.X}</span>
         </div>
         <div className="score-divider">VS</div>
-        <div className={`score-card score-o ${!isXTurn && !result && !isDraw ? "active-turn" : ""}`}>
+        <div className={`score-card score-o ${!isXTurn && !result ? "active-turn" : ""}`}>
           <span className="score-symbol o-symbol">O</span>
           <span className="score-label">Player O</span>
           <span className="score-num">{scores.O}</span>
@@ -77,8 +101,8 @@ const Board = () => {
           <span className="status-winner">
             <span className={result.winner === "X" ? "x-symbol" : "o-symbol"}>{result.winner}</span> wins!
           </span>
-        ) : isDraw ? (
-          <span className="status-draw">It's a draw!</span>
+        ) : lastRemoved !== null ? (
+          <span className="status-draw">Oldest marker removed — keep playing!</span>
         ) : (
           <span className="status-turn">
             Player <span className={isXTurn ? "x-symbol" : "o-symbol"}>{isXTurn ? "X" : "O"}</span>'s turn
@@ -93,7 +117,8 @@ const Board = () => {
             value={val}
             onClick={() => handleClick(i)}
             isWinning={winningSquares.includes(i)}
-            disabled={!!result || isDraw}
+            isRemoved={i === lastRemoved}
+            disabled={!!result}
           />
         ))}
       </div>

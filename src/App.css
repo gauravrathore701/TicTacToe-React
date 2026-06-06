@@ -170,6 +170,17 @@
   animation: winning-pop 0.4s ease forwards;
 }
 
+.square.removed {
+  border-color: rgba(251, 191, 36, 0.6);
+  box-shadow: 0 0 16px rgba(251, 191, 36, 0.3);
+  animation: removed-flash 0.5s ease forwards;
+}
+
+@keyframes removed-flash {
+  0%   { background: rgba(251, 191, 36, 0.25); }
+  100% { background: rgba(255, 255, 255, 0.03); }
+}
+
 @keyframes winning-pop {
   0%   { transform: scale(1); }
   50%  { transform: scale(1.12); }
