@@ -25,48 +25,55 @@ const Board = () => {
   const [state, setState] = useState(Array(9).fill(null));
   const [isXTurn, setIsXTurn] = useState(true);
   const [scores, setScores] = useState({ X: 0, O: 0 });
-  const [moveHistory, setMoveHistory] = useState([]);
+  const [xHistory, setXHistory] = useState([]);
+  const [oHistory, setOHistory] = useState([]);
   const [lastRemoved, setLastRemoved] = useState(null);
 
   const result = checkWinner(state);
   const winningSquares = result ? result.line : [];
 
+  // The current player's oldest marker will be removed on their next placement (if they already have 3)
+  const fadingIndex = !result
+    ? isXTurn && xHistory.length === 3
+      ? xHistory[0]
+      : !isXTurn && oHistory.length === 3
+      ? oHistory[0]
+      : null
+    : null;
+
   const handleClick = (index) => {
     if (state[index] || result) return;
 
     const copy = [...state];
-    copy[index] = isXTurn ? "X" : "O";
-    const newHistory = [...moveHistory, index];
+    const player = isXTurn ? "X" : "O";
+    copy[index] = player;
+
+    const history = isXTurn ? [...xHistory, index] : [...oHistory, index];
+    let removed = null;
+
+    // If player now exceeds 3 markers, remove their oldest
+    if (history.length > 3) {
+      removed = history.shift();
+      copy[removed] = null;
+    }
 
     const newResult = checkWinner(copy);
     if (newResult) {
       setScores((prev) => ({ ...prev, [newResult.winner]: prev[newResult.winner] + 1 }));
-      setState(copy);
-      setMoveHistory(newHistory);
-      setIsXTurn(!isXTurn);
-      setLastRemoved(null);
-      return;
-    }
-
-    // Board full with no winner — remove oldest marker
-    if (copy.every((s) => s !== null)) {
-      const oldestIndex = newHistory[0];
-      copy[oldestIndex] = null;
-      setLastRemoved(oldestIndex);
-      setMoveHistory(newHistory.slice(1));
-    } else {
-      setLastRemoved(null);
-      setMoveHistory(newHistory);
     }
 
     setState(copy);
+    if (isXTurn) setXHistory(history);
+    else setOHistory(history);
+    setLastRemoved(removed);
     setIsXTurn(!isXTurn);
   };
 
   const playAgain = () => {
     setState(Array(9).fill(null));
     setIsXTurn(true);
-    setMoveHistory([]);
+    setXHistory([]);
+    setOHistory([]);
     setLastRemoved(null);
   };
 
@@ -74,7 +81,8 @@ const Board = () => {
     setState(Array(9).fill(null));
     setIsXTurn(true);
     setScores({ X: 0, O: 0 });
-    setMoveHistory([]);
+    setXHistory([]);
+    setOHistory([]);
     setLastRemoved(null);
   };
 
@@ -118,6 +126,7 @@ const Board = () => {
             onClick={() => handleClick(i)}
             isWinning={winningSquares.includes(i)}
             isRemoved={i === lastRemoved}
+            isFading={i === fadingIndex}
             disabled={!!result}
           />
         ))}

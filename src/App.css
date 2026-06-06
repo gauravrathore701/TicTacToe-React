@@ -181,6 +181,17 @@
   100% { background: rgba(255, 255, 255, 0.03); }
 }
 
+/* Oldest marker warning — will be removed on current player's next move */
+.square.fading {
+  opacity: 0.45;
+  animation: fading-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes fading-pulse {
+  from { opacity: 0.45; }
+  to   { opacity: 0.2; }
+}
+
 @keyframes winning-pop {
   0%   { transform: scale(1); }
   50%  { transform: scale(1.12); }
