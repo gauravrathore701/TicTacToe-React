@@ -1,59 +1,57 @@
-# Tic-Tac-Toe — React
+# Tic-Tac-Toe
 
-A clean, modern Tic-Tac-Toe game built with React + Vite. Two players take turns on the same device.
+A real-time multiplayer Tic-Tac-Toe game with both online and solo modes. Built with React + Vite frontend and an Express + Socket.io backend.
+
+**Live URL:** https://tictactoe.cursedshrine.com
+
+---
 
 ## Features
 
-- Two-player local gameplay (X vs O)
-- Win detection across all rows, columns, and diagonals
-- Draw detection when the board fills with no winner
-- Winning squares highlighted with a glow effect
-- Score tracker across rounds (persists until manually reset)
-- Active turn indicator on scoreboard cards
-- Responsive layout — works on mobile and desktop
+- **Online multiplayer** — share an invite link to play with anyone on the same network
+- **Solo mode** — local 2-player pass-and-play at `/solo`
+- Room-based sessions with invite URL (`?room=ID`)
+- Real-time move sync via WebSockets
+- Win/draw detection with highlighted winning line
+- Responsive, mobile-friendly UI
 
 ## Tech Stack
 
-- **React 18** — functional components with hooks
-- **Vite** — fast dev server and build tool
-- **CSS** — custom dark theme, grid layout, animations (no UI library)
-
-## Getting Started
-
-```bash
-# Install dependencies
-npm install
-
-# Start dev server
-npm run dev
-
-# Build for production
-npm run build
-```
-
-Runs at `http://localhost:5173` by default.
-
-## Game Rules
-
-1. X always goes first.
-2. Players alternate clicking empty squares to place their mark.
-3. First to get three in a row (horizontal, vertical, or diagonal) wins.
-4. If all 9 squares are filled with no winner, it's a draw.
-5. Click **New Game** to start a fresh round (scores preserved).
-6. Click **Reset Scores** to clear the scoreboard and start over.
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 18 + Vite + React Router |
+| Backend | Node.js + Express 5 + Socket.io |
+| Build | Vite (outputs to `dist/`) |
+| Hosting | Raspberry Pi → Cloudflare Tunnel |
 
 ## Project Structure
 
 ```
-src/
-├── TicTacToeGame/
-│   ├── Board.jsx    # game logic, state, layout
-│   └── Square.jsx   # single cell component
-├── App.jsx
-├── App.css          # all game styles
-└── index.css        # global reset and background
+TicTacToe-React/
+├── src/
+│   ├── App.jsx            # Router setup
+│   ├── ModeSelect.jsx     # Choose online vs solo
+│   ├── OnlineBoard.jsx    # Multiplayer game board
+│   └── SoloBoard.jsx      # Local 2-player board
+├── server.js              # Express + Socket.io server
+├── dist/                  # Vite production build
+├── vite.config.js
+└── package.json
 ```
 
-## License
+## Running Locally
 
-MIT
+```bash
+npm install
+npm run build              # build React app to dist/
+node server.js             # start server on :4174
+```
+
+## Deployment
+
+```bash
+sudo systemctl status tictactoe
+sudo systemctl restart tictactoe
+```
+
+Port `4174` → Cloudflare Tunnel → `tictactoe.cursedshrine.com`.
