@@ -34,9 +34,9 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background-image:
-    /* fold creases near the edges only — the middle crease is left out on purpose */
     linear-gradient(90deg,
       transparent 0 22%, rgba(90, 70, 40, 0.035) 22.2%, transparent 22.5%,
+      transparent 0 57%, rgba(90, 70, 40, 0.03) 57.2%, transparent 57.5%,
       transparent 0 81%, rgba(90, 70, 40, 0.035) 81.2%, transparent 81.5%),
     linear-gradient(0deg, transparent 0 63%, rgba(90, 70, 40, 0.025) 63.15%, transparent 63.4%),
     repeating-linear-gradient(103deg, rgba(120, 95, 60, 0.028) 0 1px, transparent 1px 7px),
