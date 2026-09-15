@@ -4,7 +4,7 @@ import React from "react";
 const SiteFooter = () => (
   <footer className="site-footer">
     <div className="site-col">
-      <span>&copy; {new Date().getFullYear()} Cursed Shrine</span>
+      <span>&copy; {new Date().getFullYear()} Cursed Shrine &middot; built on a Raspberry Pi</span>
       <span className="links">
         <a href="https://cursedshrine.com">Home</a>
         <a href="https://gaurav.cursedshrine.com">Portfolio</a>
